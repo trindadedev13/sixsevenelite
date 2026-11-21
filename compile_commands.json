@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/data/data/com.termux/files/home/projs/cpp/sixsevenelite/.build",
+  "command": "/data/data/com.termux/files/usr/bin/c++  -I/data/data/com.termux/files/home/projs/cpp/sixsevenelite/include -O2 -g -DNDEBUG -std=c++26 -o CMakeFiles/botapi.dir/src/api.cpp.o -c /data/data/com.termux/files/home/projs/cpp/sixsevenelite/src/api.cpp",
+  "file": "/data/data/com.termux/files/home/projs/cpp/sixsevenelite/src/api.cpp",
+  "output": "CMakeFiles/botapi.dir/src/api.cpp.o"
+},
+{
+  "directory": "/data/data/com.termux/files/home/projs/cpp/sixsevenelite/.build",
+  "command": "/data/data/com.termux/files/usr/bin/c++  -I/data/data/com.termux/files/home/projs/cpp/sixsevenelite/include -O2 -g -DNDEBUG -std=c++26 -o CMakeFiles/sixsevenelite.dir/src/main.cpp.o -c /data/data/com.termux/files/home/projs/cpp/sixsevenelite/src/main.cpp",
+  "file": "/data/data/com.termux/files/home/projs/cpp/sixsevenelite/src/main.cpp",
+  "output": "CMakeFiles/sixsevenelite.dir/src/main.cpp.o"
+},
+{
+  "directory": "/data/data/com.termux/files/home/projs/cpp/sixsevenelite/.build",
+  "command": "/data/data/com.termux/files/usr/bin/c++  -I/data/data/com.termux/files/home/projs/cpp/sixsevenelite/include -O2 -g -DNDEBUG -std=c++26 -o CMakeFiles/sixsevenelite.dir/src/run_code.cpp.o -c /data/data/com.termux/files/home/projs/cpp/sixsevenelite/src/run_code.cpp",
+  "file": "/data/data/com.termux/files/home/projs/cpp/sixsevenelite/src/run_code.cpp",
+  "output": "CMakeFiles/sixsevenelite.dir/src/run_code.cpp.o"
+}
+]
