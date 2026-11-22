@@ -1,4 +1,3 @@
-
 #include <chrono>
 #include <cstdlib>
 #include <format>
@@ -45,12 +44,11 @@ int main(void)
 
                 messages[message.chat_id()][message.id()] = message.json();
 
-                if (!message.has_text())
+                auto const &text = message.text();
+                if (!text)
                     continue;
 
-                auto const &text = message.text();
-
-                if (text.starts_with("/reply "))
+                if (text->starts_with("/reply "))
                 {
                     auto const reply_to = message.reply_to_message_id();
 
@@ -65,7 +63,7 @@ int main(void)
                         continue;
                     }
 
-                    auto const reply_text = text.substr(7);
+                    auto const reply_text = text->substr(7);
 
                     api.reply_message(
                         message.chat_id(),
@@ -78,45 +76,45 @@ int main(void)
                         message.id()
                     );
                 }
-                else if (text.starts_with("/py "))
+                else if (text->starts_with("/py "))
                 {
-                    auto const code = text.substr(4);
+                    auto const code = text->substr(4);
                     auto const out = sse::run_py(code);
 
                     std::println("python:\n{}\noutput:\n{}", code, out);
 
                     api.reply_message(message.chat_id(), out, message.id());
                 }
-                else if (text.starts_with("/js "))
+                else if (text->starts_with("/js "))
                 {
-                    auto const code = text.substr(4);
+                    auto const code = text->substr(4);
                     auto const out = sse::run_js(code);
 
                     std::println("javascript:\n{}\noutput:\n{}", code, out);
 
                     api.reply_message(message.chat_id(), out, message.id());
                 }
-                else if (text.starts_with("/kt "))
+                else if (text->starts_with("/kt "))
                 {
-                    auto const code = text.substr(4);
+                    auto const code = text->substr(4);
                     auto const out = sse::run_kt(code);
 
                     std::println("kotlin:\n{}\noutput:\n{}", code, out);
 
                     api.reply_message(message.chat_id(), out, message.id());
                 }
-                else if (text.starts_with("/c "))
+                else if (text->starts_with("/c "))
                 {
-                    auto const code = text.substr(3);
+                    auto const code = text->substr(3);
                     auto const out = sse::run_c(code);
 
                     std::println("c:\n{}\noutput:\n{}", code, out);
 
                     api.reply_message(message.chat_id(), out, message.id());
                 }
-                else if (text.starts_with("/jv "))
+                else if (text->starts_with("/jv "))
                 {
-                    auto const code = text.substr(4);
+                    auto const code = text->substr(4);
                     auto const out = sse::run_java(code);
 
                     std::println("java:\n{}\noutput:\n{}", code, out);
@@ -143,31 +141,19 @@ int main(void)
                             continue;
                         }
 
-                        auto const &target = chat->second.at(*reply_to);
+                        sse::telegram::message target{
+                            chat->second.at(*reply_to)
+                        };
 
-                        if (!target.contains("from") ||
-                            !target.at("from").contains("id"))
-                        {
-                            api.reply_message(
-                                message.chat_id(),
-                                "Não foi possível identificar o autor dessa mensagem.",
-                                message.id()
-                            );
-
-                            continue;
-                        }
-
-                        auto const &from = target.at("from");
-
-                        auto const user_id = from.at("id").get<std::int64_t>();
-
-                        auto const username = from.contains("username")
-                            ? from.at("username").get<std::string>()
-                            : "none";
+                        auto const from = target.from();
 
                         api.reply_message(
                             message.chat_id(),
-                            std::format("@{} id: {}", username, user_id),
+                            std::format(
+                                "@{} id: {}",
+                                from.username().value_or("none"),
+                                from.id()
+                            ),
                             message.id()
                         );
                     }

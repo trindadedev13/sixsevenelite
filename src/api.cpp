@@ -5,6 +5,7 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -28,9 +29,13 @@ std::int64_t message::chat_id() const
     return data.at("chat").at("id").get<std::int64_t>();
 }
 
-std::string const &message::text() const
+std::optional<std::string> message::text() const
 {
-    return data.at("text").get_ref<std::string const &>();
+    if (!data.contains("text"))
+        return std::nullopt;
+    return data
+        .at("text")
+        .get_ref<std::string const &>();
 }
 
 std::optional<std::int64_t> message::reply_to_message_id() const
@@ -43,35 +48,39 @@ std::optional<std::int64_t> message::reply_to_message_id() const
         .get<std::int64_t>();
 }
 
-std::int64_t message::user_id() const
+user message::from() const
 {
-    return data.at("from").at("id").get<std::int64_t>();
+    return user{data.at("from")};
 }
 
-
-std::string const &message::user_first_name() const
+user::user(nlohmann::json const &_data): data{_data}
 {
-    return data.at("from").at("first_name").get_ref<std::string const &>();
 }
 
-std::string const &message::user_last_name() const
+std::int64_t user::id() const
 {
-    return data.at("from").at("last_name").get_ref<std::string const &>();
+    return data.at("id").get<std::int64_t>();
 }
 
-std::string const &message::username() const
+std::optional<std::string> user::first_name() const
 {
-    return data.at("from").at("username").get_ref<std::string const &>();
+    if (!data.contains("first_name"))
+        return std::nullopt;
+    return data.at("first_name").get_ref<std::string const &>();
 }
 
-bool message::has_text() const
+std::optional<std::string> user::last_name() const
 {
-    return data.contains("text") && data.at("text").is_string();
+    if (!data.contains("last_name"))
+        return std::nullopt;
+    return data.at("last_name").get_ref<std::string const &>();
 }
 
-bool message::has_user() const
+std::optional<std::string> user::username() const
 {
-    return data.contains("from") && data.at("from").contains("id");
+    if (!data.contains("username"))
+        return std::nullopt;
+    return data.at("username").get_ref<std::string const &>();
 }
 
 nlohmann::json const &message::json() const
